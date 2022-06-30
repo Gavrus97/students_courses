@@ -27,8 +27,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<StudentCoursesResponseDTO> getCoursesByIds(List<Long> ids) {
         return
-        Converters.convertCoursesToStudentCoursesDTO(
-                repository.findCoursesByIdIsIn(ids));
+                Converters.convertCoursesToStudentCoursesDTO(
+                        repository.findCoursesByIdIsIn(ids));
     }
 
     @Override
@@ -46,10 +46,12 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void create(CourseRequestDTO courseDTO) {
         var course = Converters.convertToEntityCourse(courseDTO);
-        try{
-            repository.save(course);
-        } catch (Exception e){
-            System.err.format("Course [%s] already exists", course.getCourseName());
+
+        if (repository.existsByCourseName(course.getCourseName())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    String.format("The course [%s] already exists", course.getCourseName()));
         }
+
+        repository.save(course);
     }
 }

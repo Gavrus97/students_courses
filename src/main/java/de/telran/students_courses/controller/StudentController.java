@@ -5,6 +5,7 @@ import de.telran.students_courses.dto.reponse.StudentResponseDTO;
 import de.telran.students_courses.dto.request.StudentRequestDTO;
 import de.telran.students_courses.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class StudentController {
     private StudentService service;
 
     @PostMapping("/students")
+    @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody StudentRequestDTO studentDTO){
         service.create(studentDTO);
     }

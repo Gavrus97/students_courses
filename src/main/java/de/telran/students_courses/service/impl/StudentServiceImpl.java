@@ -33,11 +33,11 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     public void create(StudentRequestDTO studentDTO) {
         var student = Converters.convertToStudentEntity(studentDTO);
-        try {
-            repository.save(student);
-        } catch (Exception e) {
-            System.err.format("Student with name [%s] exists", student.getName());
+        if (repository.existsByName(student.getName())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    String.format("The student with name [%s] already exists! ", student.getName()));
         }
+        repository.save(student);
     }
 
     @Override
